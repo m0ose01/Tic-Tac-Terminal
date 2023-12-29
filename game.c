@@ -50,6 +50,7 @@ int main(void)
 		printf("Placed at (%d, %d)\n", play[0] + 1, play[1] + 1);
 		make_play(board, play, player);
 		print_board(board);
+		printf("\n");
 		turn++;
 	}
 }
@@ -58,18 +59,21 @@ void print_board(Board board)
 {
 	const char symbols[] = {' ', 'X', 'O'};
 	const char hdivider = '|';
+	const char *vdivider = "+---+---+---+";
 	for (int row = 0; row < BOARD_SIZE; row++)
 	{
+		printf("%s\n", vdivider);
 		printf("%c", hdivider);
 		for (int column = 0; column < BOARD_SIZE; column++)
 		{
 			int current_square_value = board[row][column];
 			char current_symbol = symbols[current_square_value];
-			printf("%c", current_symbol);
+			printf(" %c ", current_symbol);
 			printf("%c", hdivider);
 		}
 		printf("\n");
 	}
+	printf("%s\n", vdivider);
 }
 
 int make_play(Board board, Coordinate play, int value)

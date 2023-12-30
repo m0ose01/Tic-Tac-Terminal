@@ -14,6 +14,7 @@ typedef int Coordinate[DIMENSIONS];
 #define MAX_LINELENGTH 50
 
 void display_tutorial();
+void handle_error(int error);
 int get_play(Coordinate play);
 int make_play(Board board, Coordinate play, int value);
 void print_board(Board board);
@@ -27,15 +28,19 @@ int main(void)
 	
 	bool game_running = true;
 	int turn = 1;
+
 	// MAIN GAME LOOP
 	while (game_running)
 	{
 		Coordinate play = {-1, -1};
+		int error = 0;
 		do
 		{
 			printf("Turn %i: ", turn);
 			get_play(play);
-		} while (validate_play(play, board) != 0);
+			error = validate_play(play, board);
+			handle_error(error);
+		} while (error != 0);
 
 		int player = BLANK;
 		if (turn % 2 == 0)
@@ -120,7 +125,7 @@ int validate_play(Coordinate play, Board board)
 		{
 			return -1;
 		}
-		else if (play[i] > BOARD_SIZE)
+		else if (play[i] >= BOARD_SIZE)
 		{
 			return -2;
 		}
@@ -131,4 +136,31 @@ int validate_play(Coordinate play, Board board)
 		return -3;
 	}
 	return 0;
+}
+
+void handle_error(int error)
+{
+	char *messages[] = {
+		"",
+		"Coordinates must contain only positive integers.\n",
+		"Coordinate exceeds board dimensions (3x3).\n",
+		"A piece has already been placed on that square.\n",
+	};
+	int message_id = 0;
+	switch (error)
+	{
+		case 0:
+			message_id = 0;
+			break;
+		case -1:
+			message_id = 1;
+			break;
+		case -2:
+			message_id = 2;
+			break;
+		case -3:
+			message_id = 3;
+			break;
+	}
+	printf("%s", messages[message_id]);
 }

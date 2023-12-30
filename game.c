@@ -42,15 +42,7 @@ int main(void)
 			handle_error(error);
 		} while (error != 0);
 
-		int player = BLANK;
-		if (turn % 2 == 0)
-		{
-			player = O_PLACED;
-		}
-		else
-		{
-			player = X_PLACED;
-		}
+		int player = (turn % 2 == 0) ? O_PLACED : X_PLACED;
 		printf("Placed at (%d, %d)\n", play[0] + 1, play[1] + 1);
 		make_play(board, play, player);
 		print_board(board);

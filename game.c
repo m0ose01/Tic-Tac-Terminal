@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+typedef enum square {
+	BLANK = 0,
+	X = 1,
+	O = -1,
+} Square;
+
 #define BOARD_SIZE 3
-typedef int Board[BOARD_SIZE][BOARD_SIZE];
+typedef Square Board[BOARD_SIZE][BOARD_SIZE];
 
 #define DIMENSIONS 2
 typedef int Coordinate[DIMENSIONS];
-
-#define BLANK 0
-#define X_PLACED 1
-#define O_PLACED -1
 
 #define MAX_LINELENGTH 50
 
@@ -46,7 +48,7 @@ int main(void)
 			handle_error(error);
 		} while (error != 0);
 
-		int player = (turn % 2 == 0) ? O_PLACED : X_PLACED;
+		int player = (turn % 2 == 0) ? O : X;
 		printf("Placed at (%d, %d)\n", play[0] + 1, play[1] + 1);
 		make_play(board, play, player);
 		print_board(board);
@@ -83,7 +85,7 @@ void print_board(Board board)
 			char current_symbol = ' ';
 			if (current_square_value != BLANK)
 			{
-				current_symbol = (current_square_value == X_PLACED) ? 'X' : 'O';
+				current_symbol = (current_square_value == X) ? 'X' : 'O';
 			}
 			printf(" %c ", current_symbol);
 			printf("%c", hdivider);
@@ -211,7 +213,7 @@ int check_win(Board board)
 	{
 		if (diagonal_sums[i] == BOARD_SIZE || (diagonal_sums[i] == -BOARD_SIZE))
 		{
-			return (diagonal_sums[i] > 0) ? X_PLACED : O_PLACED;
+			return (diagonal_sums[i] > 0) ? X : O;
 		}
 	}
 
@@ -219,12 +221,12 @@ int check_win(Board board)
 	{
 		if (row_sums[i] == BOARD_SIZE || row_sums[i] == -BOARD_SIZE)
 		{
-			return (row_sums[i] > 0) ? X_PLACED : O_PLACED;
+			return (row_sums[i] > 0) ? X : O;
 		}
 
 		if (col_sums[i] == BOARD_SIZE || col_sums[i] == -BOARD_SIZE)
 		{
-			return (col_sums[i] > 0) ? X_PLACED : O_PLACED;
+			return (col_sums[i] > 0) ? X : O;
 		}
 	}
 

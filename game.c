@@ -14,6 +14,7 @@ typedef int Coordinate[DIMENSIONS];
 #define MAX_LINELENGTH 50
 
 int check_win(Board board);
+void clear_board(Board board);
 void display_tutorial();
 void handle_error(int error);
 int get_play(Coordinate play);
@@ -24,7 +25,8 @@ int validate_play(Coordinate play, Board board);
 
 int main(void)
 {
-	Board board = {BLANK};
+	Board board;
+	clear_board(board);
 
 	display_tutorial();
 	
@@ -131,7 +133,8 @@ void display_tutorial()
 	char *instructions = "Type a coordinate to play";
 	printf("%s\n%s\n%s\n", banner, greeting, instructions);
 	
-	Board blank = {BLANK};
+	Board blank;
+	clear_board(blank);
 	print_board(blank);
 
 	printf("%s\n", banner);
@@ -226,4 +229,15 @@ int check_win(Board board)
 	}
 
 	return 0;
+}
+
+void clear_board(Board board)
+{
+	for (int row = 0; row < BOARD_SIZE; row++)
+	{
+		for (int column = 0; column < BOARD_SIZE; column++)
+		{
+			board[row][column] = BLANK;
+		}
+	}
 }

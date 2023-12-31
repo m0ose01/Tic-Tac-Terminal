@@ -19,6 +19,7 @@ void handle_error(int error);
 int get_play(Coordinate play);
 int make_play(Board board, Coordinate play, int value);
 void print_board(Board board);
+void rep(const char *str, int n);
 int validate_play(Coordinate play, Board board);
 
 int main(void)
@@ -67,10 +68,12 @@ int main(void)
 void print_board(Board board)
 {
 	const char hdivider = '|';
-	const char *vdivider = "+---+---+---+";
+	const char *vdivider = "---+";
 	for (int row = 0; row < BOARD_SIZE; row++)
 	{
-		printf("%s\n", vdivider);
+		printf("+");
+		rep(vdivider, BOARD_SIZE);
+		printf("\n");
 		printf("%c", hdivider);
 		for (int column = 0; column < BOARD_SIZE; column++)
 		{
@@ -85,7 +88,17 @@ void print_board(Board board)
 		}
 		printf("\n");
 	}
-	printf("%s\n", vdivider);
+	printf("+");
+	rep(vdivider, BOARD_SIZE);
+	printf("\n");
+}
+
+void rep(const char *str, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		printf("%s", str);
+	}
 }
 
 int make_play(Board board, Coordinate play, int value)
@@ -195,7 +208,7 @@ int check_win(Board board)
 	{
 		if (diagonal_sums[i] == BOARD_SIZE || (diagonal_sums[i] == -BOARD_SIZE))
 		{
-			return (diagonal_sums[i] == X_PLACED) ? O_PLACED : X_PLACED;
+			return (diagonal_sums[i] > 0) ? X_PLACED : O_PLACED;
 		}
 	}
 
@@ -203,12 +216,12 @@ int check_win(Board board)
 	{
 		if (row_sums[i] == BOARD_SIZE || row_sums[i] == -BOARD_SIZE)
 		{
-			return (row_sums[i] == X_PLACED) ? X_PLACED : O_PLACED;
+			return (row_sums[i] > 0) ? X_PLACED : O_PLACED;
 		}
 
 		if (col_sums[i] == BOARD_SIZE || col_sums[i] == -BOARD_SIZE)
 		{
-			return (col_sums[i] == X_PLACED) ? X_PLACED : O_PLACED;
+			return (col_sums[i] > 0) ? X_PLACED : O_PLACED;
 		}
 	}
 

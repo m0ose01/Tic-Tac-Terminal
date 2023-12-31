@@ -9,10 +9,11 @@ typedef int Coordinate[DIMENSIONS];
 
 #define BLANK 0
 #define X_PLACED 1
-#define O_PLACED 2
+#define O_PLACED -1
 
 #define MAX_LINELENGTH 50
 
+int check_win(Board board);
 void display_tutorial();
 void handle_error(int error);
 int get_play(Coordinate play);
@@ -47,13 +48,24 @@ int main(void)
 		make_play(board, play, player);
 		print_board(board);
 		printf("\n");
+
+		int win_status = check_win(board);
+		if (win_status != 0)
+		{
+			char winner = (win_status > 0) ? 'X' : 'O';
+			printf("%c won!\n", winner);
+			game_running = false;
+		}
 		turn++;
+		if (turn > BOARD_SIZE * BOARD_SIZE)
+		{
+			game_running = false;
+		}
 	}
 }
 
 void print_board(Board board)
 {
-	const char symbols[] = {' ', 'X', 'O'};
 	const char hdivider = '|';
 	const char *vdivider = "+---+---+---+";
 	for (int row = 0; row < BOARD_SIZE; row++)
@@ -63,7 +75,11 @@ void print_board(Board board)
 		for (int column = 0; column < BOARD_SIZE; column++)
 		{
 			int current_square_value = board[row][column];
-			char current_symbol = symbols[current_square_value];
+			char current_symbol = ' ';
+			if (current_square_value != BLANK)
+			{
+				current_symbol = (current_square_value == X_PLACED) ? 'X' : 'O';
+			}
 			printf(" %c ", current_symbol);
 			printf("%c", hdivider);
 		}
@@ -155,4 +171,46 @@ void handle_error(int error)
 			break;
 	}
 	printf("%s", messages[message_id]);
+}
+
+int check_win(Board board)
+{
+	int row_sums[BOARD_SIZE] = {0};
+	int col_sums[BOARD_SIZE] = {0};
+	int diagonal_sums[2] = {0};
+
+	for (int row = 0; row < BOARD_SIZE; row++)
+	{
+		diagonal_sums[0] += board[row][row];
+		diagonal_sums[1] += board[row][(BOARD_SIZE - 1) - row];
+
+		for (int column = 0; column < BOARD_SIZE; column++)
+		{
+			row_sums[row] += board[row][column];
+			col_sums[column] += board[row][column];
+		}
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (diagonal_sums[i] == BOARD_SIZE || (diagonal_sums[i] == -BOARD_SIZE))
+		{
+			return (diagonal_sums[i] == X_PLACED) ? O_PLACED : X_PLACED;
+		}
+	}
+
+	for (int i = 0; i < BOARD_SIZE; i++)
+	{
+		if (row_sums[i] == BOARD_SIZE || row_sums[i] == -BOARD_SIZE)
+		{
+			return (row_sums[i] == X_PLACED) ? X_PLACED : O_PLACED;
+		}
+
+		if (col_sums[i] == BOARD_SIZE || col_sums[i] == -BOARD_SIZE)
+		{
+			return (col_sums[i] == X_PLACED) ? X_PLACED : O_PLACED;
+		}
+	}
+
+	return 0;
 }

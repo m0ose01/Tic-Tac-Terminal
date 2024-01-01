@@ -87,6 +87,12 @@ void print_board(int size, Square board[size][size])
 {
 	const char hdivider = '|';
 	const char *vdivider = "---+";
+	for (int column = 0; column < size; column++)
+	{
+		printf("(,%i)", column + 1);
+	}
+	printf("\n");
+
 	for (int row = 0; row < size; row++)
 	{
 		printf("+");
@@ -104,6 +110,7 @@ void print_board(int size, Square board[size][size])
 			printf(" %c ", current_symbol);
 			printf("%c", hdivider);
 		}
+		printf(" (%i,)", row + 1);
 		printf("\n");
 	}
 	printf("+");

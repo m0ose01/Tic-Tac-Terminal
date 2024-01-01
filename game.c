@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef enum square {
 	BLANK = 0,
@@ -7,30 +8,43 @@ typedef enum square {
 	O = -1,
 } Square;
 
-#define BOARD_SIZE 3
-typedef Square Board[BOARD_SIZE][BOARD_SIZE];
-
 #define DIMENSIONS 2
 typedef int Coordinate[DIMENSIONS];
 
 #define MAX_LINELENGTH 50
 
-int check_win(Board board);
-void clear_board(Board board);
-void display_tutorial();
+int check_win(int size, Square board[size][size]);
+void clear_board(int size, Square board[size][size]);
+void display_tutorial(int size);
 void handle_error(int error);
 int get_play(Coordinate play);
-int make_play(Board board, Coordinate play, int value);
-void print_board(Board board);
+int make_play(int size, Square board[size][size], Coordinate play, int value);
+void print_board(int size, Square board[size][size]);
 void rep(const char *str, int n);
-int validate_play(Coordinate play, Board board);
+int validate_play(Coordinate play, int size, Square board[size][size]);
 
-int main(void)
+int main(int argc, char *argv[])
 {
-	Board board;
-	clear_board(board);
+	int size = 3;
 
-	display_tutorial();
+	// Handle input
+	if (argc == 2)
+	{
+		int new_size = atoi(argv[1]);
+		if (new_size < 3)
+		{
+			printf("Invalid board size. Please choose an integer greater than or equal to 3.\n");
+			return -1;
+		}
+		else
+		{
+			size = new_size;
+		}
+	}
+	Square board [size][size];
+	clear_board(size, board);
+
+	display_tutorial(size);
 	
 	bool game_running = true;
 	int turn = 1;
@@ -44,17 +58,17 @@ int main(void)
 		{
 			printf("Turn %i: ", turn);
 			get_play(play);
-			error = validate_play(play, board);
+			error = validate_play(play, size, board);
 			handle_error(error);
 		} while (error != 0);
 
 		int player = (turn % 2 == 0) ? O : X;
 		printf("Placed at (%d, %d)\n", play[0] + 1, play[1] + 1);
-		make_play(board, play, player);
-		print_board(board);
+		make_play(size, board, play, player);
+		print_board(size, board);
 		printf("\n");
 
-		int win_status = check_win(board);
+		int win_status = check_win(size, board);
 		if (win_status != 0)
 		{
 			char winner = (win_status > 0) ? 'X' : 'O';
@@ -62,24 +76,24 @@ int main(void)
 			game_running = false;
 		}
 		turn++;
-		if (turn > BOARD_SIZE * BOARD_SIZE)
+		if (turn > size * size)
 		{
 			game_running = false;
 		}
 	}
 }
 
-void print_board(Board board)
+void print_board(int size, Square board[size][size])
 {
 	const char hdivider = '|';
 	const char *vdivider = "---+";
-	for (int row = 0; row < BOARD_SIZE; row++)
+	for (int row = 0; row < size; row++)
 	{
 		printf("+");
-		rep(vdivider, BOARD_SIZE);
+		rep(vdivider, size);
 		printf("\n");
 		printf("%c", hdivider);
-		for (int column = 0; column < BOARD_SIZE; column++)
+		for (int column = 0; column < size; column++)
 		{
 			int current_square_value = board[row][column];
 			char current_symbol = ' ';
@@ -93,7 +107,7 @@ void print_board(Board board)
 		printf("\n");
 	}
 	printf("+");
-	rep(vdivider, BOARD_SIZE);
+	rep(vdivider, size);
 	printf("\n");
 }
 
@@ -105,7 +119,7 @@ void rep(const char *str, int n)
 	}
 }
 
-int make_play(Board board, Coordinate play, int value)
+int make_play(int size, Square board[size][size], Coordinate play, int value)
 {
 	int row, column;
 	row = play[0];
@@ -128,21 +142,21 @@ int get_play(Coordinate play)
 	return 0;
 }
 
-void display_tutorial()
+void display_tutorial(int size)
 {
 	char *banner = "===================================";
 	char *greeting = "TIC-TAC-TOE: A Terminal Based Game";
 	char *instructions = "Type a coordinate to play";
 	printf("%s\n%s\n%s\n", banner, greeting, instructions);
 	
-	Board blank;
-	clear_board(blank);
-	print_board(blank);
+	Square blank[size][size];
+	clear_board(size, blank);
+	print_board(size, blank);
 
 	printf("%s\n", banner);
 }
 
-int validate_play(Coordinate play, Board board)
+int validate_play(Coordinate play, int size, Square board[size][size])
 {
 	int row = play[0], column = play[1];
 	for (int i = 0; i < DIMENSIONS; i++)
@@ -151,7 +165,7 @@ int validate_play(Coordinate play, Board board)
 		{
 			return -1;
 		}
-		else if (play[i] >= BOARD_SIZE)
+		else if (play[i] >= size)
 		{
 			return -2;
 		}
@@ -191,18 +205,24 @@ void handle_error(int error)
 	printf("%s", messages[message_id]);
 }
 
-int check_win(Board board)
+int check_win(int size, Square board[size][size])
 {
-	int row_sums[BOARD_SIZE] = {0};
-	int col_sums[BOARD_SIZE] = {0};
-	int diagonal_sums[2] = {0};
+	int row_sums[size];
+	int col_sums[size];
 
-	for (int row = 0; row < BOARD_SIZE; row++)
+	for (int i = 0; i < size; i++)
+	{
+		row_sums[i] = 0;
+		col_sums[i] = 0;
+	}
+	int diagonal_sums[2] = {0, 0};
+
+	for (int row = 0; row < size; row++)
 	{
 		diagonal_sums[0] += board[row][row];
-		diagonal_sums[1] += board[row][(BOARD_SIZE - 1) - row];
+		diagonal_sums[1] += board[row][(size - 1) - row];
 
-		for (int column = 0; column < BOARD_SIZE; column++)
+		for (int column = 0; column < size; column++)
 		{
 			row_sums[row] += board[row][column];
 			col_sums[column] += board[row][column];
@@ -211,20 +231,20 @@ int check_win(Board board)
 
 	for (int i = 0; i < 2; i++)
 	{
-		if (diagonal_sums[i] == BOARD_SIZE || (diagonal_sums[i] == -BOARD_SIZE))
+		if (diagonal_sums[i] == size || (diagonal_sums[i] == -size))
 		{
 			return (diagonal_sums[i] > 0) ? X : O;
 		}
 	}
 
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = 0; i < size; i++)
 	{
-		if (row_sums[i] == BOARD_SIZE || row_sums[i] == -BOARD_SIZE)
+		if (row_sums[i] == size || row_sums[i] == -size)
 		{
 			return (row_sums[i] > 0) ? X : O;
 		}
 
-		if (col_sums[i] == BOARD_SIZE || col_sums[i] == -BOARD_SIZE)
+		if (col_sums[i] == size || col_sums[i] == -size)
 		{
 			return (col_sums[i] > 0) ? X : O;
 		}
@@ -233,11 +253,11 @@ int check_win(Board board)
 	return 0;
 }
 
-void clear_board(Board board)
+void clear_board(int size, Square board[size][size])
 {
-	for (int row = 0; row < BOARD_SIZE; row++)
+	for (int row = 0; row < size; row++)
 	{
-		for (int column = 0; column < BOARD_SIZE; column++)
+		for (int column = 0; column < size; column++)
 		{
 			board[row][column] = BLANK;
 		}

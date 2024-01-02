@@ -13,7 +13,7 @@ typedef int Coordinate[DIMENSIONS];
 
 #define MAX_LINELENGTH 50
 
-int check_win(int size, Square board[size][size]);
+int check_win(int size, Square board[size][size], int win_threshold);
 void clear_board(int size, Square board[size][size]);
 void display_tutorial(int size);
 void handle_error(int error);
@@ -26,9 +26,10 @@ int validate_play(Coordinate play, int size, Square board[size][size]);
 int main(int argc, char *argv[])
 {
 	int size = 3;
+	int win_threshold = size;
 
 	// Handle input
-	if (argc == 2)
+	if (argc >= 2)
 	{
 		int new_size = atoi(argv[1]);
 		if (new_size < 3)
@@ -40,6 +41,21 @@ int main(int argc, char *argv[])
 		{
 			size = new_size;
 		}
+	}
+	if (argc >= 3)
+	{
+		int new_win_threshold = atoi(argv[2]);
+		if (new_win_threshold > size)
+		{
+			printf("Invalid win threshold. Please choose an integer less than or equal to the board size\n");
+			return -2;
+		}
+		if (new_win_threshold < 3)
+		{
+			printf("Invalid win threshold. Please choose an integer greater than or equal to 3\n");
+			return -2;
+		}
+		win_threshold = new_win_threshold;
 	}
 	Square board [size][size];
 	clear_board(size, board);
@@ -68,7 +84,7 @@ int main(int argc, char *argv[])
 		print_board(size, board);
 		printf("\n");
 
-		int win_status = check_win(size, board);
+		int win_status = check_win(size, board, win_threshold);
 		if (win_status != 0)
 		{
 			char winner = (win_status > 0) ? 'X' : 'O';
@@ -212,7 +228,7 @@ void handle_error(int error)
 	printf("%s", messages[message_id]);
 }
 
-int check_win(int size, Square board[size][size])
+int check_win(int size, Square board[size][size], int win_threshold)
 {
 	int row_sums[size];
 	int col_sums[size];
@@ -236,9 +252,11 @@ int check_win(int size, Square board[size][size])
 		}
 	}
 
+	// Check sums
+
 	for (int i = 0; i < 2; i++)
 	{
-		if (diagonal_sums[i] == size || (diagonal_sums[i] == -size))
+		if (diagonal_sums[i] == win_threshold || (diagonal_sums[i] == -win_threshold))
 		{
 			return (diagonal_sums[i] > 0) ? X : O;
 		}
@@ -246,12 +264,12 @@ int check_win(int size, Square board[size][size])
 
 	for (int i = 0; i < size; i++)
 	{
-		if (row_sums[i] == size || row_sums[i] == -size)
+		if (row_sums[i] == win_threshold || row_sums[i] == -win_threshold)
 		{
 			return (row_sums[i] > 0) ? X : O;
 		}
 
-		if (col_sums[i] == size || col_sums[i] == -size)
+		if (col_sums[i] == win_threshold || col_sums[i] == -win_threshold)
 		{
 			return (col_sums[i] > 0) ? X : O;
 		}

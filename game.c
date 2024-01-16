@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <math.h>
 
 typedef enum square {
 	BLANK = 0,
@@ -49,12 +48,12 @@ int main(int argc, char *argv[])
 		int new_win_threshold = atoi(argv[2]);
 		if (new_win_threshold > size)
 		{
-			printf("Invalid win threshold. Please choose an integer less than or equal to the board size\n");
+			printf("Invalid win threshold. Please choose an integer less than or equal to the board size.\n");
 			return -2;
 		}
 		if (new_win_threshold < 3)
 		{
-			printf("Invalid win threshold. Please choose an integer greater than or equal to 3\n");
+			printf("Invalid win threshold. Please choose an integer greater than or equal to 3.\n");
 			return -2;
 		}
 		win_threshold = new_win_threshold;
@@ -82,7 +81,7 @@ int main(int argc, char *argv[])
 		} while (error != 0);
 
 		int player = (turn % 2 != 0) ? X : O;
-		printf("Placed at (%d, %d)\n", play[0] + 1, play[1] + 1);
+		printf("Placed at (%d, %d).\n", play[0] + 1, play[1] + 1);
 		make_play(size, board, play, player);
 		print_board(size, board);
 		printf("\n");
@@ -173,7 +172,7 @@ void display_tutorial(int size)
 {
 	char *banner = "===================================";
 	char *greeting = "TIC-TAC-TOE: A Terminal Based Game";
-	char *instructions = "Type a coordinate to play";
+	char *instructions = "Type a coordinate to play.";
 	printf("%s\n%s\n%s\n", banner, greeting, instructions);
 	
 	Square blank[size][size];
@@ -321,16 +320,12 @@ void clear_board(int size, Square board[size][size])
 
 int linear_search(int size, int array[size], int key)
 {
-	// printf("Sums: ");
 	for (int i = 0; i < size; i++)
 	{
-		// printf("%i ", array[i]);
 		if (array[i] == key)
 		{
-			// printf("found!\n");
 			return i;
 		}
 	}
-	// printf("\n");
 	return -1;
 }

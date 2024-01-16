@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef enum square {
 	BLANK = 0,
@@ -13,11 +14,12 @@ typedef int Coordinate[DIMENSIONS];
 
 #define MAX_LINELENGTH 50
 
-int check_win(int size, Square board[size][size], int win_threshold);
+bool check_win(int size, Square board[size][size], int win_threshold);
 void clear_board(int size, Square board[size][size]);
 void display_tutorial(int size);
 void handle_error(int error);
 int get_play(Coordinate play);
+int linear_search(int size, int array[size], int key);
 int make_play(int size, Square board[size][size], Coordinate play, int value);
 void print_board(int size, Square board[size][size]);
 void rep(const char *str, int n);
@@ -57,6 +59,7 @@ int main(int argc, char *argv[])
 		}
 		win_threshold = new_win_threshold;
 	}
+	printf("Starting game with board size (%ix%i), with win threshold %i.\n", size, size, win_threshold);
 	Square board [size][size];
 	clear_board(size, board);
 
@@ -78,19 +81,20 @@ int main(int argc, char *argv[])
 			handle_error(error);
 		} while (error != 0);
 
-		int player = (turn % 2 == 0) ? O : X;
+		int player = (turn % 2 != 0) ? X : O;
 		printf("Placed at (%d, %d)\n", play[0] + 1, play[1] + 1);
 		make_play(size, board, play, player);
 		print_board(size, board);
 		printf("\n");
 
 		int win_status = check_win(size, board, win_threshold);
-		if (win_status != 0)
+		if (win_status == true)
 		{
-			char winner = (win_status > 0) ? 'X' : 'O';
+			char winner = (turn % 2 != 0) ? 'X' : 'O';
 			printf("%c won!\n", winner);
 			game_running = false;
 		}
+
 		turn++;
 		if (turn > size * size)
 		{
@@ -228,54 +232,80 @@ void handle_error(int error)
 	printf("%s", messages[message_id]);
 }
 
-int check_win(int size, Square board[size][size], int win_threshold)
+bool check_win(int size, Square board[size][size], int win_threshold)
 {
-	int row_sums[size];
-	int col_sums[size];
+	bool win_found = false;
 
-	for (int i = 0; i < size; i++)
+	const int SUMS_COUNT = (size * 2) + 2;
+	int sums[SUMS_COUNT];
+	int row_index = 0, col_index = size, diag_index = size * 2;
+	for (int this_sum = 0; this_sum < SUMS_COUNT; this_sum++)
 	{
-		row_sums[i] = 0;
-		col_sums[i] = 0;
+		sums[this_sum] = 0;
 	}
-	int diagonal_sums[2] = {0, 0};
-
+	
 	for (int row = 0; row < size; row++)
 	{
-		diagonal_sums[0] += board[row][row];
-		diagonal_sums[1] += board[row][(size - 1) - row];
-
-		for (int column = 0; column < size; column++)
+		if (win_found == true)
 		{
-			row_sums[row] += board[row][column];
-			col_sums[column] += board[row][column];
+			break;
+		}
+		
+		int prev_row = row - 1;
+
+		if (prev_row >= 0 && board[row][row] == board[prev_row][prev_row] && board[row][row] != BLANK)
+		{
+			sums[diag_index] += board[row][row];
+		}
+		else
+		{
+			sums[diag_index] = 0;
+		}
+
+		if (prev_row >= 0 && board[row][(size - 1) - row] == board[prev_row][(size - 1) - prev_row] && board[row][row] != BLANK)
+		{
+			sums[diag_index + 1] += board[row][(size - 1) - row];
+		}
+		else
+		{
+			sums[diag_index + 1] = 0;
+		}
+
+		for (int col = 0; col < size; col++)
+		{
+			int prev_col = col - 1;
+
+			if (prev_col >= 0 && board[row][col] == board[row][prev_col] && board[row][col] != BLANK)
+			{
+				sums[row_index + row] += board[row][col];
+			}
+			else
+			{
+				sums[row_index + row] = 0;
+			}
+
+			if (prev_row >= 0 && board[row][col] == board[prev_row][col] && board[row][col] != BLANK)
+			{
+				sums[col_index + col] += board[row][col];
+			}
+			else
+			{
+				sums[col_index] = 0;
+			}
+
+			win_found = (linear_search(SUMS_COUNT, sums, win_threshold - 1) >= 0 || linear_search(SUMS_COUNT, sums, -(win_threshold - 1)) >= 0);
+			if (win_found == true)
+			{
+				break;
+			}
 		}
 	}
 
-	// Check sums
-
-	for (int i = 0; i < 2; i++)
+	if (win_found)
 	{
-		if (diagonal_sums[i] == win_threshold || (diagonal_sums[i] == -win_threshold))
-		{
-			return (diagonal_sums[i] > 0) ? X : O;
-		}
+		return true;
 	}
-
-	for (int i = 0; i < size; i++)
-	{
-		if (row_sums[i] == win_threshold || row_sums[i] == -win_threshold)
-		{
-			return (row_sums[i] > 0) ? X : O;
-		}
-
-		if (col_sums[i] == win_threshold || col_sums[i] == -win_threshold)
-		{
-			return (col_sums[i] > 0) ? X : O;
-		}
-	}
-
-	return 0;
+	return false;
 }
 
 void clear_board(int size, Square board[size][size])
@@ -287,4 +317,20 @@ void clear_board(int size, Square board[size][size])
 			board[row][column] = BLANK;
 		}
 	}
+}
+
+int linear_search(int size, int array[size], int key)
+{
+	// printf("Sums: ");
+	for (int i = 0; i < size; i++)
+	{
+		// printf("%i ", array[i]);
+		if (array[i] == key)
+		{
+			// printf("found!\n");
+			return i;
+		}
+	}
+	// printf("\n");
+	return -1;
 }

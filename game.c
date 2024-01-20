@@ -348,7 +348,7 @@ bool check_diagonal(int size, Square board[size][size], int win_threshold, Coord
 	const int DIAGONAL_COUNT = 1 + ((size - win_threshold) * 2);
 	int sum = 0;
 
-	for (int row = 0; row < size; row++)
+	for (int row = 0; row < diagonal_length; row++)
 	{
 		int prev_row = row - 1;
 

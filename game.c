@@ -13,6 +13,7 @@ typedef int Coordinate[DIMENSIONS];
 
 #define MAX_LINELENGTH 50
 
+bool check_diagonal(int size, Square board[size][size], int win_threshold, Coordinate start, int diagonal_length, bool antidiagonal);
 bool check_win(int size, Square board[size][size], int win_threshold);
 void clear_board(int size, Square board[size][size]);
 void display_tutorial(int size);
@@ -235,40 +236,52 @@ bool check_win(int size, Square board[size][size], int win_threshold)
 {
 	bool win_found = false;
 
-	const int SUMS_COUNT = (size * 2) + 2;
+	const int DIAGONAL_COUNT = 1 + ((size - win_threshold) * 2);
+	const int ROW_COUNT = size;
+	const int COLUMN_COUNT = size;
+	const int SUMS_COUNT = ROW_COUNT + COLUMN_COUNT + DIAGONAL_COUNT;
 	int sums[SUMS_COUNT];
-	int row_index = 0, col_index = size, diag_index = size * 2;
+	int row_index = 0, col_index = ROW_COUNT, diag_index = ROW_COUNT + COLUMN_COUNT;
 	for (int this_sum = 0; this_sum < SUMS_COUNT; this_sum++)
 	{
 		sums[this_sum] = 0;
 	}
-	
+
+	for (int i = 0; i < 2; i++)
+	{
+		bool is_antidiagonal = (i == 1) ? true : false;
+		Coordinate offset = {0, 0};
+		if (check_diagonal(size, board, win_threshold, offset, size, is_antidiagonal))
+		{
+			return true;
+		}
+
+		for (int j = 0; j < (DIAGONAL_COUNT - 1) / 2; j++)
+		{
+			Coordinate offset_A = {0, j + 1};
+			Coordinate offset_B = {j + 1, 0};
+
+			if (check_diagonal(size, board, win_threshold, offset_A, size - (j + 1), is_antidiagonal))
+			{
+				return true;
+			}
+
+			if (check_diagonal(size, board, win_threshold, offset_B, size - (j + 1), is_antidiagonal))
+			{
+				return true;
+			}
+	   		
+		}
+	}
+
 	for (int row = 0; row < size; row++)
 	{
 		if (win_found == true)
 		{
-			break;
+			return true;
 		}
 		
 		int prev_row = row - 1;
-
-		if (prev_row >= 0 && board[row][row] == board[prev_row][prev_row] && board[row][row] != BLANK)
-		{
-			sums[diag_index] += board[row][row];
-		}
-		else
-		{
-			sums[diag_index] = 0;
-		}
-
-		if (prev_row >= 0 && board[row][(size - 1) - row] == board[prev_row][(size - 1) - prev_row] && board[row][row] != BLANK)
-		{
-			sums[diag_index + 1] += board[row][(size - 1) - row];
-		}
-		else
-		{
-			sums[diag_index + 1] = 0;
-		}
 
 		for (int col = 0; col < size; col++)
 		{
@@ -295,7 +308,7 @@ bool check_win(int size, Square board[size][size], int win_threshold)
 			win_found = (linear_search(SUMS_COUNT, sums, win_threshold - 1) >= 0 || linear_search(SUMS_COUNT, sums, -(win_threshold - 1)) >= 0);
 			if (win_found == true)
 			{
-				break;
+				return true;
 			}
 		}
 	}
@@ -328,4 +341,43 @@ int linear_search(int size, int array[size], int key)
 		}
 	}
 	return -1;
+}
+
+bool check_diagonal(int size, Square board[size][size], int win_threshold, Coordinate offset, int diagonal_length, bool antidiagonal)
+{
+	const int DIAGONAL_COUNT = 1 + ((size - win_threshold) * 2);
+	int sum = 0;
+
+	for (int row = 0; row < size; row++)
+	{
+		int prev_row = row - 1;
+
+		Square current_square;
+		Square prev_square;
+		if (antidiagonal == false)
+		{
+			current_square = board[offset[0] + row][offset[1] + row];
+			prev_square = board[offset[0] + prev_row][offset[1] + prev_row];
+		}
+		else
+		{
+			current_square = board[offset[0] + row][(size - 1) - row - offset[1]];
+			prev_square = board[offset[0] + prev_row][(size - 1) - prev_row - offset[1]];
+		}
+
+		if (prev_row >= 0 && current_square == prev_square && current_square != BLANK)
+		{
+			sum += current_square;
+		}
+		else
+		{
+			sum = 0;
+		}
+
+		if (sum == (win_threshold - 1) * X || sum == (win_threshold - 1) * O)
+		{
+			return true;
+		}
+	}
+	return false;
 }

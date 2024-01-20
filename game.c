@@ -350,7 +350,6 @@ bool check_diagonal(int size, Square board[size][size], int win_threshold, Coord
 
 	for (int row = 0; row < size; row++)
 	{
-		// printf("%i\t", sum);
 		int prev_row = row - 1;
 
 		Square current_square;
@@ -374,7 +373,6 @@ bool check_diagonal(int size, Square board[size][size], int win_threshold, Coord
 		{
 			sum = 0;
 		}
-		// printf("%i\n", sum);
 
 		if (sum == (win_threshold - 1) * X || sum == (win_threshold - 1) * O)
 		{

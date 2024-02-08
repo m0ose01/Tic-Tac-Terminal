@@ -12,6 +12,8 @@ typedef enum square {
 typedef int Coordinate[DIMENSIONS];
 
 #define MAX_LINELENGTH 50
+#define MIN_BOARD_SIZE 3
+#define MAX_BOARD_SIZE 100
 
 bool check_diagonal(int size, Square board[size][size], int win_threshold, Coordinate start, int diagonal_length, bool antidiagonal);
 bool check_win(int size, Square board[size][size], int win_threshold);
@@ -34,9 +36,14 @@ int main(int argc, char *argv[])
 	if (argc >= 2)
 	{
 		int new_size = atoi(argv[1]);
-		if (new_size < 3)
+		if (new_size < MIN_BOARD_SIZE)
 		{
 			printf("Invalid board size. Please choose an integer greater than or equal to 3.\n");
+			return -1;
+		}
+		if (new_size > MAX_BOARD_SIZE)
+		{
+			printf("Invalid board size. This exceeds the max board size of %i.\n", MAX_BOARD_SIZE);
 			return -1;
 		}
 		else

@@ -113,10 +113,10 @@ int main(int argc, char *argv[])
 void print_board(int size, Square board[size][size])
 {
 	const char hdivider = '|';
-	const char *vdivider = "---+";
+	const char *vdivider = "-----+";
 	for (int column = 0; column < size; column++)
 	{
-		printf("(,%i)", column + 1);
+		printf("(,%03i)", column + 1);
 	}
 	printf("\n");
 
@@ -124,8 +124,7 @@ void print_board(int size, Square board[size][size])
 	{
 		printf("+");
 		rep(vdivider, size);
-		printf("\n");
-		printf("%c", hdivider);
+		printf("\n%c", hdivider);
 		for (int column = 0; column < size; column++)
 		{
 			int current_square_value = board[row][column];
@@ -134,10 +133,10 @@ void print_board(int size, Square board[size][size])
 			{
 				current_symbol = (current_square_value == X) ? 'X' : 'O';
 			}
-			printf(" %c ", current_symbol);
+			printf("  %c  ", current_symbol);
 			printf("%c", hdivider);
 		}
-		printf(" (%i,)", row + 1);
+		printf(" (%03i,)", row + 1);
 		printf("\n");
 	}
 	printf("+");

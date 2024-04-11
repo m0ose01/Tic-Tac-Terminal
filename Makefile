@@ -1,6 +1,6 @@
-all: game
+all: tic_tac_toe
 
-game: game.c
+tic_tac_toe: game.c
 	clang -o tic_tac_toe game.c
 
 debug: game.c

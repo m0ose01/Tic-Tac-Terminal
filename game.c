@@ -308,7 +308,7 @@ bool check_win(int size, Square board[size][size], int win_threshold)
 			}
 			else
 			{
-				sums[col_index] = 0;
+				sums[col_index + col] = 0;
 			}
 
 			win_found = (linear_search(SUMS_COUNT, sums, win_threshold - 1) >= 0 || linear_search(SUMS_COUNT, sums, -(win_threshold - 1)) >= 0);

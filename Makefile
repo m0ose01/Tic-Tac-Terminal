@@ -1,7 +1,7 @@
 all: tic_tac_toe
 
-tic_tac_toe: game.c
-	clang -o tic_tac_toe game.c
+tic_tac_toe: src/main.c
+	clang -o tic_tac_toe src/main.c -Iinclude
 
-debug: game.c
-	clang -g -O0 -o tic_tac_toe game.c
+debug: src/main.c
+	clang -g -O0 -o tic_tac_toe src/main.c -Iinclude

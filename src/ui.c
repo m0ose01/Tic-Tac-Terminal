@@ -7,14 +7,23 @@ void display_tutorial(WINDOW *window, int size)
 {
 	char *banner = "===================================";
 	char *greeting = "TIC-TAC-TOE: A Terminal Based Game";
-	char *instructions = "Move the arrow keys to play.";
+	char *instructions = 
+	"Use the arrow keys or hjkl to move your piece.\n"
+	"Press enter or space to place your piece.";
 	wprintw(window, "%s\n%s\n%s\n", banner, greeting, instructions);
 
 	Square blank[size][size];
 	clear_board(size, blank);
-	// print_board(window, size, blank);
-
 	wprintw(window, "%s\n", banner);
+}
+
+void display_information(WINDOW *window, int turn, int size, int win_threshold)
+{
+	int start_row = 6;
+	mvwprintw(window, start_row, 0, "BOARD SIZE: %i", size);
+	mvwprintw(window, start_row + 1, 0, "WIN THRESHOLD: %i", win_threshold);
+	mvwprintw(window, start_row + 2, 0, "TURN: %i", turn);
+	mvwprintw(window, start_row + 3, 0, "CURRENT PLAYER: %c", turn % 2 == 0 ? 'O':'X');
 }
 
 void print_board(WINDOW *window, int size, Square board[size][size])
@@ -74,26 +83,26 @@ void get_play(WINDOW *window, Coordinate play, int size, Square board[size][size
 		int ch = getch();
 		switch (ch)
 		{
-			case KEY_LEFT:
+			case KEY_LEFT: case 'h':
 				play[1] = play[1] > 0 ? play[1] - 1: play[1];
 				break;
-			case KEY_RIGHT:
+			case KEY_RIGHT: case 'l':
 				play[1] = play[1] < size - 1 ? play[1] + 1: play[1];
 				break;
-			case KEY_UP:
+			case KEY_UP: case 'k':
 				play[0] = play[0] > 0 ? play[0] - 1:play[0];
 				break;
-			case KEY_DOWN:
+			case KEY_DOWN: case 'j':
 				play[0] = play[0] < (size - 1) ? play[0] + 1: play[0];
 				break;
-			case KEY_BACKSPACE:
+			case ' ': case '\n':
 				getting_input = false;
 				break;
 		}
 	}
 }
 
-void handle_error(int error)
+void handle_error(WINDOW *window, int error)
 {
 	char *messages[] = {
 		"",
@@ -117,5 +126,5 @@ void handle_error(int error)
 			message_id = 3;
 			break;
 	}
-	printw("%s", messages[message_id]);
+	wprintw(window, "%s", messages[message_id]);
 }

@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
 int main(int argc, char *argv[])
 {
 	int size = 3;
@@ -48,7 +46,6 @@ int main(int argc, char *argv[])
 		}
 		win_threshold = new_win_threshold;
 	}
-	printf("Starting game with board size (%ix%i), with win threshold %i.\n", size, size, win_threshold);
 	Square board [size][size];
 	clear_board(size, board);
 
@@ -57,7 +54,6 @@ int main(int argc, char *argv[])
 	noecho();
 	curs_set(0);
 	keypad(stdscr, TRUE);
-	refresh();
 
 	int board_wheight = 2 + 2 * size;
 	int board_wwidth = 1 + 6 * size + 7;
@@ -69,9 +65,8 @@ int main(int argc, char *argv[])
 	int messages_wwidth = COLS;
 	int messages_starty = 0;
 	int messages_startx = (COLS) / 2 - messages_wwidth / 2;
-
 	WINDOW *messages_window = newwin(messages_wheight, messages_wwidth, messages_starty, messages_startx);
-	box(messages_window, 0, 0);
+
 	wrefresh(board_window);
 	wrefresh(messages_window);
 	refresh();
@@ -90,25 +85,21 @@ int main(int argc, char *argv[])
 		int error = 0;
 		do
 		{
-			printw("Turn %i: ", turn);
+			display_information(messages_window, turn, size, win_threshold);
+			wrefresh(messages_window);
 			get_play(board_window, play, size, board, turn);
 			error = validate_play(play, size, board);
-			handle_error(error);
-			wrefresh(board_window);
-			refresh();
+			handle_error(messages_window, error);
 		} while (error != 0);
 
 		int player = (turn % 2 != 0) ? X : O;
-		// printw("Placed at (%d, %d).\n", play[0] + 1, play[1] + 1);
 		make_play(size, board, play, player);
 		print_board(board_window, size, board);
-		printw("\n");
 
 		int win_status = check_win(size, board, win_threshold);
 		if (win_status == true)
 		{
 			char winner = (turn % 2 != 0) ? 'X' : 'O';
-			printw("%c won!\n", winner);
 			game_running = false;
 		}
 

@@ -2,6 +2,7 @@
 #include <game_logic.h>
 #include <game_ui.h>
 
+#include <ncurses.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,7 +52,32 @@ int main(int argc, char *argv[])
 	Square board [size][size];
 	clear_board(size, board);
 
-	display_tutorial(size);
+	initscr();
+	cbreak();
+	noecho();
+	curs_set(0);
+	keypad(stdscr, TRUE);
+	refresh();
+
+	int board_wheight = 2 + 2 * size;
+	int board_wwidth = 1 + 6 * size + 7;
+	int board_starty = (LINES) / 2 - board_wheight / 2;
+	int board_startx = (COLS) / 2 - board_wwidth / 2;
+	WINDOW *board_window = newwin(board_wheight, board_wwidth, board_starty, board_startx);
+
+	int messages_wheight = 10;
+	int messages_wwidth = COLS;
+	int messages_starty = 0;
+	int messages_startx = (COLS) / 2 - messages_wwidth / 2;
+
+	WINDOW *messages_window = newwin(messages_wheight, messages_wwidth, messages_starty, messages_startx);
+	box(messages_window, 0, 0);
+	wrefresh(board_window);
+	wrefresh(messages_window);
+	refresh();
+
+	display_tutorial(messages_window, size);
+	wrefresh(messages_window);
 	
 	bool game_running = true;
 	int turn = 1;
@@ -59,27 +85,30 @@ int main(int argc, char *argv[])
 	// MAIN GAME LOOP
 	while (game_running)
 	{
+		refresh();
 		Coordinate play = {-1, -1};
 		int error = 0;
 		do
 		{
-			printf("Turn %i: ", turn);
-			get_play(play);
+			printw("Turn %i: ", turn);
+			get_play(board_window, play, size, board, turn);
 			error = validate_play(play, size, board);
 			handle_error(error);
+			wrefresh(board_window);
+			refresh();
 		} while (error != 0);
 
 		int player = (turn % 2 != 0) ? X : O;
-		printf("Placed at (%d, %d).\n", play[0] + 1, play[1] + 1);
+		// printw("Placed at (%d, %d).\n", play[0] + 1, play[1] + 1);
 		make_play(size, board, play, player);
-		print_board(size, board);
-		printf("\n");
+		print_board(board_window, size, board);
+		printw("\n");
 
 		int win_status = check_win(size, board, win_threshold);
 		if (win_status == true)
 		{
 			char winner = (turn % 2 != 0) ? 'X' : 'O';
-			printf("%c won!\n", winner);
+			printw("%c won!\n", winner);
 			game_running = false;
 		}
 
@@ -89,4 +118,8 @@ int main(int argc, char *argv[])
 			game_running = false;
 		}
 	}
+	delwin(board_window);
+	delwin(messages_window);
+	endwin();
+	return 0;
 }

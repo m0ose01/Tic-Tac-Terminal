@@ -13,19 +13,6 @@ int make_play(int size, Square board[size][size], Coordinate play, int value)
 	return 0;
 }
 
-int get_play(Coordinate play)
-{
-	char input[MAX_LINELENGTH];
-
-	fgets(input, MAX_LINELENGTH, stdin);
-	sscanf(input, " %d %d ", &play[0], &play[1]);
-	for (int i = 0; i < DIMENSIONS; i++)
-	{
-		play[i] += -1;
-	}
-	return 0;
-}
-
 int validate_play(Coordinate play, int size, Square board[size][size])
 {
 	int row = play[0], column = play[1];
@@ -46,33 +33,6 @@ int validate_play(Coordinate play, int size, Square board[size][size])
 		return -3;
 	}
 	return 0;
-}
-
-void handle_error(int error)
-{
-	char *messages[] = {
-		"",
-		"Coordinates must contain only positive integers.\n",
-		"Coordinate exceeds board dimensions (3x3).\n",
-		"A piece has already been placed on that square.\n",
-	};
-	int message_id = 0;
-	switch (error)
-	{
-		case 0:
-			message_id = 0;
-			break;
-		case -1:
-			message_id = 1;
-			break;
-		case -2:
-			message_id = 2;
-			break;
-		case -3:
-			message_id = 3;
-			break;
-	}
-	printf("%s", messages[message_id]);
 }
 
 bool check_win(int size, Square board[size][size], int win_threshold)

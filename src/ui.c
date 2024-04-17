@@ -5,21 +5,19 @@
 
 void display_tutorial(WINDOW *window, int size)
 {
-	char *banner = "===================================";
+	char *banner = "========================================================================================";
 	char *greeting = "TIC-TAC-TOE: A Terminal Based Game";
-	char *instructions = 
-	"Use the arrow keys or hjkl to move your piece.\n"
-	"Press enter or space to place your piece.";
-	wprintw(window, "%s\n%s\n%s\n", banner, greeting, instructions);
+	char *instructions = "Use the arrow keys or hjkl to move your piece. Press enter or space to place your piece.";
+	mvwprintw(window, 0, 0, "%s\n%s\n%s\n", banner, greeting, instructions);
 
 	Square blank[size][size];
 	clear_board(size, blank);
-	wprintw(window, "%s\n", banner);
+	wprintw(window, "%s", banner);
 }
 
 void display_information(WINDOW *window, int turn, int size, int win_threshold)
 {
-	int start_row = 6;
+	int start_row = 4;
 	mvwprintw(window, start_row, 0, "BOARD SIZE: %i", size);
 	mvwprintw(window, start_row + 1, 0, "WIN THRESHOLD: %i", win_threshold);
 	mvwprintw(window, start_row + 2, 0, "TURN: %i", turn);

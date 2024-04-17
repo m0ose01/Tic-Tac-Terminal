@@ -57,22 +57,18 @@ int main(int argc, char *argv[])
 
 	int board_wheight = 2 + 2 * size;
 	int board_wwidth = 1 + 6 * size + 7;
-	int board_starty = (LINES) / 2 - board_wheight / 2;
+	int board_starty = 9;
 	int board_startx = (COLS) / 2 - board_wwidth / 2;
 	WINDOW *board_window = newwin(board_wheight, board_wwidth, board_starty, board_startx);
 
-	int messages_wheight = 10;
-	int messages_wwidth = COLS;
+	int messages_wheight = 8;
+	int messages_wwidth = 89;
 	int messages_starty = 0;
 	int messages_startx = (COLS) / 2 - messages_wwidth / 2;
 	WINDOW *messages_window = newwin(messages_wheight, messages_wwidth, messages_starty, messages_startx);
 
-	wrefresh(board_window);
-	wrefresh(messages_window);
-	refresh();
-
 	display_tutorial(messages_window, size);
-	wrefresh(messages_window);
+	refresh();
 	
 	bool game_running = true;
 	int turn = 1;

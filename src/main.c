@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 		}
 
 		turn++;
-		if (turn > size * size)
+		if (turn > size * size && game_running == true)
 		{
 			werase(messages_window);
 			mvwprintw(messages_window, 0, 0, "The game was drawn.");

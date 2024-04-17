@@ -76,7 +76,9 @@ void get_play(WINDOW *window, Coordinate play, int size, Square board[size][size
 		int placement_y = 2 + play[0] * 2;
 		int placement_x = 3 + play[1] * 6;
 		char current_symbol  = (turn % 2 == 0) ? 'O': 'X';
+		wattron(window, COLOR_PAIR(CURSOR_COLOUR));
 		mvwaddch(window, placement_y, placement_x, current_symbol);
+		wattroff(window, COLOR_PAIR(CURSOR_COLOUR));
 		wrefresh(window);
 		int ch = getch();
 		switch (ch)

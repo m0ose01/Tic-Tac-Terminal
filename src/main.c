@@ -84,6 +84,18 @@ int main(int argc, char *argv[])
 		return -3;
 	}
 
+	// Turn colours on
+	start_color();
+	if (!has_colors())
+	{
+		delwin(board_window);
+		delwin(messages_window);
+		endwin();
+		printf("Error: Colour not supported.");
+		return -4;
+	}
+	init_pair(CURSOR_COLOUR, COLOR_BLACK, COLOR_WHITE);
+
 	display_tutorial(messages_window, size);
 	refresh();
 	

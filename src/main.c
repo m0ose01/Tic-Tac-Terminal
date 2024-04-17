@@ -57,11 +57,11 @@ int main(int argc, char *argv[])
 
 	int board_wheight = 2 + 2 * size;
 	int board_wwidth = 1 + 6 * size + 7;
-	int board_starty = 9;
+	int board_starty = 10;
 	int board_startx = (COLS) / 2 - board_wwidth / 2;
 	WINDOW *board_window = newwin(board_wheight, board_wwidth, board_starty, board_startx);
 
-	int messages_wheight = 8;
+	int messages_wheight = 9;
 	int messages_wwidth = 89;
 	int messages_starty = 0;
 	int messages_startx = (COLS) / 2 - messages_wwidth / 2;
@@ -96,12 +96,22 @@ int main(int argc, char *argv[])
 		if (win_status == true)
 		{
 			char winner = (turn % 2 != 0) ? 'X' : 'O';
+			werase(messages_window);
+			mvwprintw(messages_window, 0, 0, "%c won!", winner);
+			mvwprintw(messages_window, 1, 0, "Press any key to exit.");
+			wrefresh(messages_window);
+			getch();
 			game_running = false;
 		}
 
 		turn++;
 		if (turn > size * size)
 		{
+			werase(messages_window);
+			mvwprintw(messages_window, 0, 0, "The game was drawn.");
+			mvwprintw(messages_window, 1, 0, "Press any key to exit.");
+			wrefresh(messages_window);
+			getch();
 			game_running = false;
 		}
 	}

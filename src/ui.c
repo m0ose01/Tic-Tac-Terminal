@@ -103,10 +103,10 @@ void get_play(WINDOW *window, Coordinate play, int size, Square board[size][size
 void handle_error(WINDOW *window, int error)
 {
 	char *messages[] = {
-		"",
-		"Coordinates must contain only positive integers.\n",
-		"Coordinate exceeds board dimensions (3x3).\n",
-		"A piece has already been placed on that square.\n",
+		"                                                ",
+		"Coordinates must contain only positive integers.",
+		"Coordinate exceeds board dimensions (3x3).      ",
+		"A piece has already been placed on that square. ",
 	};
 	int message_id = 0;
 	switch (error)
@@ -124,5 +124,6 @@ void handle_error(WINDOW *window, int error)
 			message_id = 3;
 			break;
 	}
-	wprintw(window, "%s", messages[message_id]);
+	int start_row = 4;
+	mvwprintw(window, start_row + 4, 0, "MESSAGE: %s", messages[message_id]);
 }

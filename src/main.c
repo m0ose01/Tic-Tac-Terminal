@@ -67,6 +67,23 @@ int main(int argc, char *argv[])
 	int messages_startx = (COLS) / 2 - messages_wwidth / 2;
 	WINDOW *messages_window = newwin(messages_wheight, messages_wwidth, messages_starty, messages_startx);
 
+	if (messages_wwidth > COLS)
+	{
+		delwin(board_window);
+		delwin(messages_window);
+		endwin();
+		printf("Terminal window too small to display UI.\n");
+		return -3;
+	}
+	if (board_wwidth > COLS || (board_wheight + board_starty) > LINES)
+	{
+		delwin(board_window);
+		delwin(messages_window);
+		endwin();
+		printf("Terminal window too small to display a board of this size. Please try with a smaller size.\n");
+		return -3;
+	}
+
 	display_tutorial(messages_window, size);
 	refresh();
 	

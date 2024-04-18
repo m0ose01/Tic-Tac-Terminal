@@ -14,6 +14,10 @@ typedef int Coordinate[DIMENSIONS];
 #define MIN_BOARD_SIZE 3
 #define MAX_BOARD_SIZE 100
 
+// UI Constants
 #define CURSOR_COLOUR 1
+
+#define ROW_HEIGHT 2
+#define COLUMN_WIDTH 6
 
 #endif

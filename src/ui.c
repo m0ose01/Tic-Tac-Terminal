@@ -27,42 +27,30 @@ void display_information(WINDOW *window, int turn, int size, int win_threshold)
 void print_board(WINDOW *window, int size, Square board[size][size])
 {
 	const char hdivider = '|';
-	const char *vdivider = "-----+";
-	const int row_height = 2;
-	const int column_width = 6;
+	const char *vdivider = "+-----+";
 	for (int column = 0; column < size; column++)
 	{
-		mvwprintw(window, 0, 0 + 6 * column, "(,%03d)", column + 1);
-		mvwprintw(window, 1, 1 + 6 * column, "-----+");
-		mvwprintw(window, 1, 0, "+");
+		mvwprintw(window, 0, 0 + COLUMN_WIDTH * column, "(,%03d)", column + 1);
+		mvwprintw(window, 1, 0 + COLUMN_WIDTH * column, "%s", vdivider);
 	}
 	for (int row = 0; row < size; row++)
 	{
 		for (int column = 0; column < size; column++)
 		{
+			// Determine which symbol should be displayed in each square
 			int current_square_value = board[row][column];
 			char current_symbol = ' ';
 			if (current_square_value != BLANK)
 			{
 				current_symbol = (current_square_value == X) ? 'X' : 'O';
 			}
-			mvwprintw(window, 2 + 2 * row, 0, "|");
-			mvwprintw(window, 3 + 2 * row, 0, "+");
-			mvwprintw(window, 2 + 2 * row, 1 + 6 * column, "  %c  |", current_symbol);
-			mvwprintw(window, 3 + 2 * row, 1 + 6 * column, "-----+");
+			mvwprintw(window, 2 + ROW_HEIGHT * row, 0 + COLUMN_WIDTH * column, "%c  %c  %c", hdivider, current_symbol, hdivider);
+			mvwprintw(window, 3 + ROW_HEIGHT * row, 0 + COLUMN_WIDTH * column, "%s", vdivider);
 
 		}
-		mvwprintw(window, 2 + 2 * row, 1 + 6 * size, " (%03d,)", row + 1);
+		mvwprintw(window, 2 + ROW_HEIGHT * row, 1 + COLUMN_WIDTH * size, " (%03d,)", row + 1);
 	}
 	wrefresh(window);
-}
-
-void rep(WINDOW *window, const char *str, int n)
-{
-	for (int i = 0; i < n; i++)
-	{
-		wprintw(window, "%s", str);
-	}
 }
 
 void get_play(WINDOW *window, Coordinate play, int size, Square board[size][size], int turn)
@@ -73,8 +61,8 @@ void get_play(WINDOW *window, Coordinate play, int size, Square board[size][size
 	while (getting_input)
 	{
 		print_board(window, size, board);
-		int placement_y = 2 + play[0] * 2;
-		int placement_x = 3 + play[1] * 6;
+		int placement_y = 2 + play[0] * ROW_HEIGHT;
+		int placement_x = 3 + play[1] * COLUMN_WIDTH;
 		char current_symbol  = (turn % 2 == 0) ? 'O': 'X';
 		wattron(window, COLOR_PAIR(CURSOR_COLOUR));
 		mvwaddch(window, placement_y, placement_x, current_symbol);

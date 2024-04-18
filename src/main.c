@@ -49,24 +49,26 @@ int main(int argc, char *argv[])
 	Square board [size][size];
 	clear_board(size, board);
 
+	// Initialise UI
 	initscr();
 	cbreak();
 	noecho();
 	curs_set(0);
 	keypad(stdscr, TRUE);
 
-	int board_wheight = 2 + 2 * size;
-	int board_wwidth = 1 + 6 * size + 7;
-	int board_starty = 10;
-	int board_startx = (COLS) / 2 - board_wwidth / 2;
-	WINDOW *board_window = newwin(board_wheight, board_wwidth, board_starty, board_startx);
-
-	int messages_wheight = 9;
-	int messages_wwidth = 89;
-	int messages_starty = 0;
-	int messages_startx = (COLS) / 2 - messages_wwidth / 2;
+	const int messages_wheight = 9;
+	const int messages_wwidth = 89;
+	const int messages_starty = 0;
+	const int messages_startx = (COLS) / 2 - messages_wwidth / 2;
 	WINDOW *messages_window = newwin(messages_wheight, messages_wwidth, messages_starty, messages_startx);
 
+	const int board_wheight = 2 + 2 * size;
+	const int board_wwidth = 1 + 6 * size + 7;
+	const int board_starty = messages_starty + messages_wheight + 1;
+	const int board_startx = (COLS) / 2 - board_wwidth / 2;
+	WINDOW *board_window = newwin(board_wheight, board_wwidth, board_starty, board_startx);
+
+	// Check screen is of sufficient size to hold UI.
 	if (messages_wwidth > COLS)
 	{
 		delwin(board_window);
@@ -105,9 +107,9 @@ int main(int argc, char *argv[])
 	// MAIN GAME LOOP
 	while (game_running)
 	{
-		refresh();
 		Coordinate play = {-1, -1};
 		int error = 0;
+		// Handle player input
 		do
 		{
 			display_information(messages_window, turn, size, win_threshold);

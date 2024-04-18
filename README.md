@@ -1,11 +1,10 @@
 # Tic-Tac-Terminal
 
+## Usage
+
 This is a terminal-based version of the classic tic-tac-toe game.
 If no arguments are specified, a standard 3x3 tic-tac-toe game will be chosen as the default.
 ```bash
-===================================
-TIC-TAC-TOE: A Terminal Based Game
-Type a coordinate to play.
 (,001)(,002)(,003)
 +-----+-----+-----+
 |     |     |     | (001,)
@@ -14,7 +13,6 @@ Type a coordinate to play.
 +-----+-----+-----+
 |     |     |     | (003,)
 +-----+-----+-----+
-===================================
 ```
 
 Command line options allow the specification of board size, and win threshold.
@@ -41,11 +39,9 @@ produces the following board:
 +-----+-----+-----+-----+-----+
 ```
 There is a 5x5 board, and either player must place 3 pieces in a line (vertical, horizontal or diagonal) to win.
-Input is received by typing two numbers into the console, separated by spaces, e.g.,
+The arrow keys or hjkl (similar to Vim motions) can be used to move the piece. Press space or enter to place your piece.
 
 ```bash
-Turn 1: 2 3
-Placed at (2, 3).
 (,001)(,002)(,003)(,004)(,005)
 +-----+-----+-----+-----+-----+
 |     |     |     |     |     | (001,)
@@ -61,3 +57,19 @@ Placed at (2, 3).
 ```
 
 This continues until either a player wins, or there is no free square on the board.
+
+## Installation
+
+### Prerequisites
+
+* GNU Make
+* A C compiler
+* A terminal with colour support
+* Ncurses installation
+
+Currently, this application has only been tested on Linux Mint 21.3.
+Feedback on compatibility with other systems is welcome.
+
+1. Clone the repo using git.
+2. In the project directory, simply type `make` to compile the program.
+3. Optionally place the binary `./tic_tac_toe` in a directory accessible from the system path.

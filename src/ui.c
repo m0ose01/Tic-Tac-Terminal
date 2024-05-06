@@ -2,6 +2,29 @@
 #include <game_logic.h>
 #include <game_ui.h>
 #include <ncurses.h>
+#include <string.h>
+
+void display_splash_screen(WINDOW *window)
+{
+	const int splash_colour = 3;
+	init_pair(splash_colour, COLOR_RED, COLOR_BLACK);
+	char *splash_string =
+" _____ _           _____               _____                   _             _ \n"
+"|_   _(_)         |_   _|             |_   _|                 (_)           | |\n"
+"  | |  _  ___ ______| | __ _  ___ ______| | ___ _ __ _ __ ___  _ _ __   __ _| |\n"
+"  | | | |/ __|______| |/ _` |/ __|______| |/ _ \\ '__| '_ ` _ \\| | '_ \\ / _` | |\n"
+"  | | | | (__       | | (_| | (__       | |  __/ |  | | | | | | | | | | (_| | |\n"
+"  \\_/ |_|\\___|      \\_/\\__,_|\\___|      \\_/\\___|_|  |_| |_| |_|_|_| |_|\\__,_|_|\n";
+	
+	wattron(window, COLOR_PAIR(splash_colour));
+	wattron(window, A_BOLD);
+	wprintw(window, "%s", splash_string);
+	wattroff(window, COLOR_PAIR(splash_colour));
+	wattroff(window, A_BOLD);
+	char *instruction = "Press any key to continue";
+	mvwprintw(window, 7, getmaxx(window) / 2 - strlen(instruction) / 2, "%s", instruction);
+	wrefresh(window);
+}
 
 void display_tutorial(WINDOW *window, int size)
 {

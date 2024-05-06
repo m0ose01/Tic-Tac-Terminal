@@ -98,6 +98,18 @@ int main(int argc, char *argv[])
 	}
 	init_pair(CURSOR_COLOUR, COLOR_BLACK, COLOR_WHITE);
 
+	const int splash_screen_wheight = 8;
+	const int splash_screen_wwidth = 89;
+	const int splash_screen_starty = (LINES / 2) - (splash_screen_wheight / 2);
+	const int splash_screen_startx = (COLS / 2) - (splash_screen_wwidth / 2);
+	WINDOW *splash_window = newwin(splash_screen_wheight, splash_screen_wwidth, splash_screen_starty, splash_screen_startx);
+
+	display_splash_screen(splash_window);
+	wgetch(splash_window);
+	refresh();
+	wclear(splash_window);
+	delwin(splash_window);
+
 	display_tutorial(messages_window, size);
 	refresh();
 	

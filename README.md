@@ -4,7 +4,7 @@
 
 This is a terminal-based version of the classic tic-tac-toe game.
 If no arguments are specified, a standard 3x3 tic-tac-toe game will be chosen as the default.
-```bash
+```
 (,001)(,002)(,003)
 +-----+-----+-----+
 |     |     |     | (001,)
@@ -18,13 +18,13 @@ If no arguments are specified, a standard 3x3 tic-tac-toe game will be chosen as
 Command line options allow the specification of board size, and win threshold.
 For example:
 
-```bash
+```
 ./tic_tac_toe 5 3
 ```
 
 produces the following board:
 
-```bash
+```
 (,001)(,002)(,003)(,004)(,005)
 +-----+-----+-----+-----+-----+
 |     |     |     |     |     | (001,)
@@ -41,7 +41,7 @@ produces the following board:
 There is a 5x5 board, and either player must place 3 pieces in a line (vertical, horizontal or diagonal) to win.
 The arrow keys or hjkl (similar to Vim motions) can be used to move the piece. Press space or enter to place your piece.
 
-```bash
+```
 (,001)(,002)(,003)(,004)(,005)
 +-----+-----+-----+-----+-----+
 |     |     |     |     |     | (001,)

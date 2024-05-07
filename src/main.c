@@ -57,31 +57,37 @@ int main(int argc, char *argv[])
 	curs_set(0);
 	keypad(stdscr, TRUE);
 
-	const int messages_wheight = 9;
-	const int messages_wwidth = 89;
-	const int messages_starty = 0;
-	const int messages_startx = (COLS) / 2 - messages_wwidth / 2;
-	WINDOW *messages_window = newwin(messages_wheight, messages_wwidth, messages_starty, messages_startx);
+	const int tutorial_wheight = 5;
+	const int tutorial_wwidth = 89;
+	const int tutorial_starty = 0;
+	const int tutorial_startx = (COLS) / 2 - tutorial_wwidth / 2;
+	WINDOW *tutorial_window = newwin(tutorial_wheight, tutorial_wwidth, tutorial_starty, tutorial_startx);
 
 	const int board_wheight = 2 + 2 * size;
 	const int board_wwidth = 1 + 6 * size + 7;
-	const int board_starty = messages_starty + messages_wheight + 1;
+	const int board_starty = tutorial_starty + tutorial_wheight + 1;
 	const int board_startx = (COLS) / 2 - board_wwidth / 2;
 	WINDOW *board_window = newwin(board_wheight, board_wwidth, board_starty, board_startx);
 
+	const int info_wheight = 3;
+	const int info_wwidth = 89;
+	const int info_starty = board_starty + board_wheight + 1;
+	const int info_startx = (COLS / 2) - (info_wwidth / 2);
+	WINDOW *info_window = newwin(info_wheight, info_wwidth, info_starty, info_startx);
+
 	// Check screen is of sufficient size to hold UI.
-	if (messages_wwidth > COLS)
+	if (tutorial_wwidth > COLS)
 	{
 		delwin(board_window);
-		delwin(messages_window);
+		delwin(tutorial_window);
 		endwin();
 		printf("Terminal window too small to display UI.\n");
 		return -3;
 	}
-	if (board_wwidth > COLS || (board_wheight + board_starty) > LINES)
+	if (board_wwidth > COLS || (info_wheight + info_starty) > LINES)
 	{
 		delwin(board_window);
-		delwin(messages_window);
+		delwin(tutorial_window);
 		endwin();
 		printf("Terminal window too small to display a board of this size. Please try with a smaller size.\n");
 		return -3;
@@ -92,7 +98,7 @@ int main(int argc, char *argv[])
 	if (!has_colors())
 	{
 		delwin(board_window);
-		delwin(messages_window);
+		delwin(tutorial_window);
 		endwin();
 		printf("Error: Colour not supported.");
 		return -4;
@@ -101,7 +107,8 @@ int main(int argc, char *argv[])
 
 	display_splash_screen(SPLASH_GAME_START);
 
-	display_tutorial(messages_window, size);
+	display_tutorial(tutorial_window, size);
+	wrefresh(tutorial_window);
 	refresh();
 	
 	bool game_running = true;
@@ -115,11 +122,11 @@ int main(int argc, char *argv[])
 		// Handle player input
 		do
 		{
-			display_information(messages_window, turn, size, win_threshold);
-			wrefresh(messages_window);
+			display_information(info_window, turn, size, win_threshold);
+			wrefresh(info_window);
 			get_play(board_window, play, size, board, turn);
 			error = validate_play(play, size, board);
-			handle_error(messages_window, error);
+			handle_error(info_window, error);
 		} while (error != 0);
 
 		int player = (turn % 2 != 0) ? X : O;
@@ -130,8 +137,8 @@ int main(int argc, char *argv[])
 		if (win_status == true)
 		{
 			char winner = (turn % 2 != 0) ? 'X' : 'O';
-			werase(messages_window);
-			wrefresh(messages_window);
+			werase(tutorial_window);
+			wrefresh(tutorial_window);
 			werase(stdscr);
 			wrefresh(stdscr);
 			int winner_splash_screen = (turn % 2 != 0) ? SPLASH_X_WON : SPLASH_O_WON;
@@ -142,8 +149,8 @@ int main(int argc, char *argv[])
 		turn++;
 		if (turn > size * size && game_running == true)
 		{
-			werase(messages_window);
-			wrefresh(messages_window);
+			werase(tutorial_window);
+			wrefresh(tutorial_window);
 			werase(stdscr);
 			wrefresh(stdscr);
 			display_splash_screen(SPLASH_GAME_DRAWN);
@@ -151,7 +158,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	delwin(board_window);
-	delwin(messages_window);
+	delwin(tutorial_window);
 	endwin();
 	return 0;
 }

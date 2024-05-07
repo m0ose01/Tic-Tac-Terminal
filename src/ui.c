@@ -74,7 +74,7 @@ void display_splash_screen(int splash_screen)
 	wprintw(splash_window, "%s", splash_string);
 	wattroff(splash_window, COLOR_PAIR(splash_colour));
 	wattroff(splash_window, A_BOLD);
-	char *instruction = "Press any key to continue";
+	char *instruction = "Press any key to continue.";
 	mvwprintw(splash_window, 7, getmaxx(splash_window) / 2 - strlen(instruction) / 2, "%s", instruction);
 	wrefresh(splash_window);
 	wgetch(splash_window);
@@ -88,20 +88,18 @@ void display_tutorial(WINDOW *window, int size)
 	char *banner = "========================================================================================";
 	char *greeting = "TIC-TAC-TOE: A Terminal Based Game";
 	char *instructions = "Use the arrow keys or hjkl to move your piece. Press enter or space to place your piece.";
-	mvwprintw(window, 0, 0, "%s\n%s\n%s\n", banner, greeting, instructions);
+	char *exit_instructions = "Press Ctrl-C to exit.";
+	mvwprintw(window, 0, 0, "%s\n%s\n%s\n%s\n%s\n", banner, greeting, instructions, exit_instructions, banner);
 
 	Square blank[size][size];
 	clear_board(size, blank);
-	wprintw(window, "%s", banner);
 }
 
 void display_information(WINDOW *window, int turn, int size, int win_threshold)
 {
-	int start_row = 4;
-	mvwprintw(window, start_row, 0, "BOARD SIZE: %i", size);
-	mvwprintw(window, start_row + 1, 0, "WIN THRESHOLD: %i", win_threshold);
-	mvwprintw(window, start_row + 2, 0, "TURN: %i", turn);
-	mvwprintw(window, start_row + 3, 0, "CURRENT PLAYER: %c", turn % 2 == 0 ? 'O':'X');
+	int start_row = 0;
+	mvwprintw(window, start_row, 0, "BOARD SIZE: %03d      WIN_THRESHOLD: %03d", size, win_threshold);
+	mvwprintw(window, start_row + 1, 0, "TURN:       %03d      CURRENT PLAYER: %c", turn, turn % 2 == 0 ? 'O':'X');
 }
 
 void print_board(WINDOW *window, int size, Square board[size][size])
@@ -194,6 +192,6 @@ void handle_error(WINDOW *window, int error)
 			message_id = 3;
 			break;
 	}
-	int start_row = 4;
-	mvwprintw(window, start_row + 4, 0, "MESSAGE: %s", messages[message_id]);
+	int start_row = 0;
+	mvwprintw(window, start_row + 2, 0, "MESSAGE: %s", messages[message_id]);
 }

@@ -147,7 +147,6 @@ int main(int argc, char *argv[])
 			werase(stdscr);
 			wrefresh(stdscr);
 			display_splash_screen(SPLASH_GAME_DRAWN);
-			getch();
 			game_running = false;
 		}
 	}

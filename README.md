@@ -1,19 +1,9 @@
 # Tic-Tac-Terminal
 
-## Usage
+![](screenshots/splashscreen.jpg)
 
-This is a terminal-based version of the classic tic-tac-toe game.
+This is a terminal-based version of tic-tac-toe.
 If no arguments are specified, a standard 3x3 tic-tac-toe game will be chosen as the default.
-```
-(,001)(,002)(,003)
-+-----+-----+-----+
-|     |     |     | (001,)
-+-----+-----+-----+
-|     |     |     | (002,)
-+-----+-----+-----+
-|     |     |     | (003,)
-+-----+-----+-----+
-```
 
 Command line options allow the specification of board size, and win threshold.
 For example:
@@ -58,6 +48,12 @@ The arrow keys or hjkl (similar to Vim motions) can be used to move the piece. P
 
 This continues until either a player wins, or there is no free square on the board.
 
+## Usage
+
+```
+./tic_tac_toe [board size] [win threshold]
+```
+
 ## Installation
 
 ### Prerequisites
@@ -77,7 +73,14 @@ Feedback on compatibility with other systems is welcome.
 ## Design
 
 This project consists of 4 header files, and 3 source files.
-By far the most complicated part of this project was ensuring that wins were detected along diagonals, on an arbitrarily large board, with a variable "win threshold".
+The more complex game logic is separated from the UI code insofar as possible, so that this code could theoretically be reused with e.g., a web-based UI, with a little effort.
+
+The UI was built using the Ncurses library, which is included with most Linux distributions.
+There is a window above the main board to display instructions on how to play the game, and a window below the board to display some information about the game currently being played, e.g., whose turn it is, how many turns have been played, and the number of plays needed to win.
+If the program detects that there are insufficient rows on the screen to display the UI, the program will exit with an error message.
+This can be rectified by either choosing a smaller board size, or zooming out in your terminal emulator so that more lines of text can be displayed.
+
+![](screenshots/gameplaydemo.jpg)
 
 ### Header Files
 
@@ -95,7 +98,7 @@ By far the most complicated part of this project was ensuring that wins were det
 * src/main.c
     * The entry point, which contains the main function and the main game loop, and logic to manage launching and closing the application.
 * src/ui.c
-    * Functions which draw various aspects of the UI using ncurses.
+    * Functions which draw various aspects of the UI using Ncurses.
 * src/logic.c
     * Functions for the UI-independent game logic, such as detecting when the game is won or drawn, or determining whether a square is already occupied.
 

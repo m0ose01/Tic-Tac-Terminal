@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 	}
 	init_pair(CURSOR_COLOUR, COLOR_BLACK, COLOR_WHITE);
 
-	display_splash_screen();
+	display_splash_screen(SPLASH_GAME_START);
 
 	display_tutorial(messages_window, size);
 	refresh();
@@ -131,10 +131,11 @@ int main(int argc, char *argv[])
 		{
 			char winner = (turn % 2 != 0) ? 'X' : 'O';
 			werase(messages_window);
-			mvwprintw(messages_window, 0, 0, "%c won!", winner);
-			mvwprintw(messages_window, 1, 0, "Press any key to exit.");
 			wrefresh(messages_window);
-			getch();
+			werase(stdscr);
+			wrefresh(stdscr);
+			int winner_splash_screen = (turn % 2 != 0) ? SPLASH_X_WON : SPLASH_O_WON;
+			display_splash_screen(winner_splash_screen);
 			game_running = false;
 		}
 
@@ -142,9 +143,10 @@ int main(int argc, char *argv[])
 		if (turn > size * size && game_running == true)
 		{
 			werase(messages_window);
-			mvwprintw(messages_window, 0, 0, "The game was drawn.");
-			mvwprintw(messages_window, 1, 0, "Press any key to exit.");
 			wrefresh(messages_window);
+			werase(stdscr);
+			wrefresh(stdscr);
+			display_splash_screen(SPLASH_GAME_DRAWN);
 			getch();
 			game_running = false;
 		}

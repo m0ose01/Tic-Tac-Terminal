@@ -7,6 +7,11 @@
 #define MIN_BOARD_SIZE 3
 #define MAX_BOARD_SIZE 100
 
+#define SPLASH_GAME_START 0
+#define SPLASH_X_WON 1
+#define SPLASH_O_WON 2
+#define SPLASH_GAME_DRAWN 3
+
 // UI Constants
 #define CURSOR_COLOUR 1
 

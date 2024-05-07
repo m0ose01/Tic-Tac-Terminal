@@ -5,10 +5,63 @@
 #include <ncurses.h>
 #include <string.h>
 
-void display_splash_screen()
+void display_splash_screen(int splash_screen)
 {
+	char *x_won_string = 
+		"__   __  _    _             _ \n"
+		"\\ \\ / / | |  | |           | |\n"
+		" \\ V /  | |  | | ___  _ __ | |\n"
+		" /   \\  | |/\\| |/ _ \\| '_ \\| |\n"
+		"/ /^\\ \\ \\  /\\  / (_) | | | |_|\n"
+		"\\/   \\/  \\/  \\/ \\___/|_| |_(_)\n";
+
+	char *o_won_string = 
+		" _____   _    _             _ \n"
+		"|  _  | | |  | |           | |\n"
+		"| | | | | |  | | ___  _ __ | |\n"
+		"| | | | | |/\\| |/ _ \\| '_ \\| |\n"
+		"\\ \\_/ / \\  /\\  / (_) | | | |_|\n"
+		" \\___/   \\/  \\/ \\___/|_| |_(_)\n";
+
+	char *game_drawn_string = 
+"______                    _ \n"
+"|  _  \\                  | |\n"
+"| | | |_ __ __ ___      _| |\n"
+"| | | | '__/ _` \\ \\ /\\ / / |\n"
+"| |/ /| | | (_| |\\ V  V /|_|\n"
+"|___/ |_|  \\__,_| \\_/\\_/ (_)\n";
+
+	char *start_string =
+		" _____ _           _____               _____                   _             _ \n"
+		"|_   _(_)         |_   _|             |_   _|                 (_)           | |\n"
+		"  | |  _  ___ ______| | __ _  ___ ______| | ___ _ __ _ __ ___  _ _ __   __ _| |\n"
+		"  | | | |/ __|______| |/ _` |/ __|______| |/ _ \\ '__| '_ ` _ \\| | '_ \\ / _` | |\n"
+		"  | | | | (__       | | (_| | (__       | |  __/ |  | | | | | | | | | | (_| | |\n"
+		"  \\_/ |_|\\___|      \\_/\\__,_|\\___|      \\_/\\___|_|  |_| |_| |_|_|_| |_|\\__,_|_|\n";
+
 	const int splash_screen_wheight = 8;
-	const int splash_screen_wwidth = 89;
+	int splash_screen_wwidth = 89;
+	char *splash_string;
+
+	switch (splash_screen) {
+		case SPLASH_X_WON:
+			splash_screen_wwidth = 32;
+			splash_string = x_won_string;
+			break;
+		case SPLASH_O_WON:
+			splash_screen_wwidth = 32;
+			splash_string = o_won_string;
+			break;
+		case SPLASH_GAME_DRAWN:
+			splash_screen_wwidth = 30;
+			splash_string = game_drawn_string;
+			break;	
+		default:
+			splash_screen_wwidth = 89;
+			splash_string = start_string;
+			break;
+	}
+
 	const int splash_screen_starty = (LINES / 2) - (splash_screen_wheight / 2);
 	const int splash_screen_startx = (COLS / 2) - (splash_screen_wwidth / 2);
 	WINDOW *splash_window = newwin(splash_screen_wheight, splash_screen_wwidth, splash_screen_starty, splash_screen_startx);
@@ -16,14 +69,6 @@ void display_splash_screen()
 
 	const int splash_colour = 3;
 	init_pair(splash_colour, COLOR_RED, COLOR_BLACK);
-	char *splash_string =
-" _____ _           _____               _____                   _             _ \n"
-"|_   _(_)         |_   _|             |_   _|                 (_)           | |\n"
-"  | |  _  ___ ______| | __ _  ___ ______| | ___ _ __ _ __ ___  _ _ __   __ _| |\n"
-"  | | | |/ __|______| |/ _` |/ __|______| |/ _ \\ '__| '_ ` _ \\| | '_ \\ / _` | |\n"
-"  | | | | (__       | | (_| | (__       | |  __/ |  | | | | | | | | | | (_| | |\n"
-"  \\_/ |_|\\___|      \\_/\\__,_|\\___|      \\_/\\___|_|  |_| |_| |_|_|_| |_|\\__,_|_|\n";
-	
 	wattron(splash_window, COLOR_PAIR(splash_colour));
 	wattron(splash_window, A_BOLD);
 	wprintw(splash_window, "%s", splash_string);

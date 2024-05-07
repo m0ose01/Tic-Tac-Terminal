@@ -1,5 +1,6 @@
 #include <game_constants.h>
 #include <game_logic.h>
+#include <game_types.h>
 #include <stdbool.h>
 
 int make_play(int size, Square board[size][size], Coordinate play, int value)

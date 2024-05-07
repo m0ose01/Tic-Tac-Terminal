@@ -2,6 +2,7 @@
 #define LOGIC_INCLUDED
 
 #include <game_constants.h>
+#include <game_types.h>
 #include <stdbool.h>
 
 bool check_diagonal(int size, Square board[size][size], int win_threshold, Coordinate start, int diagonal_length, bool antidiagonal);

@@ -1,5 +1,6 @@
 #include <game_constants.h>
 #include <game_logic.h>
+#include <game_types.h>
 #include <game_ui.h>
 
 #include <ncurses.h>

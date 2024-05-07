@@ -5,8 +5,15 @@
 #include <ncurses.h>
 #include <string.h>
 
-void display_splash_screen(WINDOW *window)
+void display_splash_screen()
 {
+	const int splash_screen_wheight = 8;
+	const int splash_screen_wwidth = 89;
+	const int splash_screen_starty = (LINES / 2) - (splash_screen_wheight / 2);
+	const int splash_screen_startx = (COLS / 2) - (splash_screen_wwidth / 2);
+	WINDOW *splash_window = newwin(splash_screen_wheight, splash_screen_wwidth, splash_screen_starty, splash_screen_startx);
+
+
 	const int splash_colour = 3;
 	init_pair(splash_colour, COLOR_RED, COLOR_BLACK);
 	char *splash_string =
@@ -17,14 +24,18 @@ void display_splash_screen(WINDOW *window)
 "  | | | | (__       | | (_| | (__       | |  __/ |  | | | | | | | | | | (_| | |\n"
 "  \\_/ |_|\\___|      \\_/\\__,_|\\___|      \\_/\\___|_|  |_| |_| |_|_|_| |_|\\__,_|_|\n";
 	
-	wattron(window, COLOR_PAIR(splash_colour));
-	wattron(window, A_BOLD);
-	wprintw(window, "%s", splash_string);
-	wattroff(window, COLOR_PAIR(splash_colour));
-	wattroff(window, A_BOLD);
+	wattron(splash_window, COLOR_PAIR(splash_colour));
+	wattron(splash_window, A_BOLD);
+	wprintw(splash_window, "%s", splash_string);
+	wattroff(splash_window, COLOR_PAIR(splash_colour));
+	wattroff(splash_window, A_BOLD);
 	char *instruction = "Press any key to continue";
-	mvwprintw(window, 7, getmaxx(window) / 2 - strlen(instruction) / 2, "%s", instruction);
-	wrefresh(window);
+	mvwprintw(splash_window, 7, getmaxx(splash_window) / 2 - strlen(instruction) / 2, "%s", instruction);
+	wrefresh(splash_window);
+	wgetch(splash_window);
+	wclear(splash_window);
+	refresh();
+	delwin(splash_window);
 }
 
 void display_tutorial(WINDOW *window, int size)

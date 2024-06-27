@@ -8,6 +8,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+enum exit_code {
+	EXIT_OK = 0,
+	BOARD_SIZE_ERROR = -1,
+	WIN_THRESHOLD_ERROR = -2,
+	WINDOW_SIZE_ERROR = -3,
+	COLOUR_DISPLAY_ERROR = -4,
+};
+
 int main(int argc, char *argv[])
 {
 	int size = 3;
@@ -20,12 +28,12 @@ int main(int argc, char *argv[])
 		if (new_size < MIN_BOARD_SIZE)
 		{
 			printf("Invalid board size. Please choose an integer greater than or equal to 3.\n");
-			return -1;
+			return BOARD_SIZE_ERROR;
 		}
 		if (new_size > MAX_BOARD_SIZE)
 		{
 			printf("Invalid board size. This exceeds the max board size of %i.\n", MAX_BOARD_SIZE);
-			return -1;
+			return BOARD_SIZE_ERROR;
 		}
 		else
 		{
@@ -38,12 +46,12 @@ int main(int argc, char *argv[])
 		if (new_win_threshold > size)
 		{
 			printf("Invalid win threshold. Please choose an integer less than or equal to the board size.\n");
-			return -2;
+			return WIN_THRESHOLD_ERROR;
 		}
 		if (new_win_threshold < 3)
 		{
 			printf("Invalid win threshold. Please choose an integer greater than or equal to 3.\n");
-			return -2;
+			return WIN_THRESHOLD_ERROR;
 		}
 		win_threshold = new_win_threshold;
 	}
@@ -82,7 +90,7 @@ int main(int argc, char *argv[])
 		delwin(tutorial_window);
 		endwin();
 		printf("Terminal window too small to display UI.\n");
-		return -3;
+		return WINDOW_SIZE_ERROR;
 	}
 	if (board_wwidth > COLS || (info_wheight + info_starty) > LINES)
 	{
@@ -90,7 +98,7 @@ int main(int argc, char *argv[])
 		delwin(tutorial_window);
 		endwin();
 		printf("Terminal window too small to display a board of this size. Please try with a smaller size.\n");
-		return -3;
+		return WINDOW_SIZE_ERROR;
 	}
 
 	// Turn colours on
@@ -101,7 +109,7 @@ int main(int argc, char *argv[])
 		delwin(tutorial_window);
 		endwin();
 		printf("Error: Colour not supported.");
-		return -4;
+		return COLOUR_DISPLAY_ERROR;
 	}
 	init_pair(CURSOR_COLOUR, COLOR_BLACK, COLOR_WHITE);
 
@@ -160,5 +168,5 @@ int main(int argc, char *argv[])
 	delwin(board_window);
 	delwin(tutorial_window);
 	endwin();
-	return 0;
+	return EXIT_OK;
 }
